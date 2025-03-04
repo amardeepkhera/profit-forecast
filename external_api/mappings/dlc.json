@@ -1,0 +1,13 @@
+{
+  "request": {
+      "method": "GET",
+      "url": "/inventory/cost"
+  },
+  "response": {
+      "status": 200,
+      "headers": {
+          "Content-Type": "application/json"
+      },
+      "body": "[{\"product\" : 1, \"cost_price\": 1099}, {\"product\" : 2, \"cost_price\": 1299},  {\"product\" : 3, \"cost_price\": 999}, {\"product\" : 4, \"cost_price\": 599}, {\"product\" : 5, \"cost_price\": 1199}, {\"product\" : 6, \"cost_price\": 1199},{\"product\" : 7, \"cost_price\": 120},{\"product\" : 8, \"cost_price\": 400}]"
+  }
+}

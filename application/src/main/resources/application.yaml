@@ -1,0 +1,32 @@
+server:
+  port: 8081
+
+app:
+  database:
+    host: mssql
+    schema: salesexercise
+    username: SA
+    password: Passw0rd
+  integration:
+    inventory:
+      baseUrl: https://wiremock:8443
+      skipSSLVerification: true
+      endpoints:
+        getAllProductsCost: '/inventory/cost'
+  cache:
+    getAllProductsCost:
+      enable: true
+      expiry: PT1M
+  previousNMonthsSales: 3
+spring:
+  application:
+    name: 'profit-forecast-service'
+  jpa:
+   open-in-view: false
+   show-sql: true
+  datasource:
+    url: jdbc:sqlserver://${app.database.host};database=${app.database.schema};encrypt=true;trustServerCertificate=true
+    username: ${app.database.username}
+    password: ${app.database.password}
+    hikari:
+      auto-commit: false

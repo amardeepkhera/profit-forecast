@@ -1,0 +1,6 @@
+app:
+  database:
+   host: localhost
+  integration:
+    inventory:
+      baseUrl: https://localhost:8443

@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  mssql:
+    image: mcr.microsoft.com/azure-sql-edge:latest
+    command: /opt/mssql/bin/sqlservr
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "Passw0rd"
+    stdin_open: true
+    ports:
+      - 1433:1433
+    networks:
+      - sales_net
+  sqlcmd:
+    platform: linux/amd64
+    image: mssql-tools
+    build:
+      context: ./database/
+      dockerfile: ./sql-tools.dockerfile
+    command: /bin/bash /opt/db_scripts/initialise.sh
+    stdin_open: true
+    networks:
+      - sales_net
+  wiremock:
+    image: wiremock/wiremock:latest
+    command: --https-port 8443
+    ports:
+      - '8080:8080'
+      - '8443:8443'
+    volumes:
+      - ./external_api:/home/wiremock
+    networks:
+      - sales_net
+networks:
+  sales_net:
+    name: sales_net
