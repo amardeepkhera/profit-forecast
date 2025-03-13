@@ -26,6 +26,8 @@ dependencies {
 
     implementation 'io.micrometer:micrometer-tracing-bridge-brave'
 
+    testImplementation group: 'com.atlassian.oai', name: 'swagger-request-validator-spring-web-client', version: '2.44.1'
+
     runtimeOnly 'com.microsoft.sqlserver:mssql-jdbc'
 
     compileOnly 'org.projectlombok:lombok:1.18.36'

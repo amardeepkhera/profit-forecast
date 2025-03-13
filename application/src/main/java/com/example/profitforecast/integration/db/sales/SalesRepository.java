@@ -13,14 +13,19 @@ import java.util.List;
 @Repository
 public interface SalesRepository extends CrudRepository<Sales, Long> {
 
-    @Query(value = "select p.id as productId, p.brand as brand, AVG(s.units_sold) as avgUnitsSold," +
-            " AVG(s.total_dollar_sales) as avgTotalSales" +
+    @Query(value = "select temp.brand as brand,temp.productId as productId," +
+            " AVG(temp.units_sold) as avgUnitsSold, AVG(temp.total_dollar_sales) as avgTotalSales" +
+            " from (" +
+            " select p.id as productId, p.brand as brand," +
+            " s.units_sold as units_sold," +
+            " s.total_dollar_sales as total_dollar_sales," +
+            " CONCAT(s.month,'_',s.year) as monthYr" +
             " from sales s, product p" +
             " WHERE s.product_id =p.id" +
-            " and s.year =:#{#monthOfAYear.year().getValue()}" +
-            " and s.month IN (:#{#monthOfAYear.getNPreviousMonths(#previousNMonths)})" +
-            " group by p.brand,p.id" +
-            " order by p.brand"
+            " group by p.brand,p.id,s.month,s.year,s.units_sold,s.total_dollar_sales " +
+            ") temp" +
+            " where temp.monthYr in (:#{#monthOfAYear.getNPreviousMonths(#previousNMonths)})" +
+            " group by temp.brand,temp.productId order by temp.brand"
             , nativeQuery = true)
     List<ProductSales> getAllProductsSales(@Param("monthOfAYear") MonthOfAYear monthOfAYear, int previousNMonths);
 

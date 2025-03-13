@@ -9,7 +9,6 @@ import org.springframework.cache.annotation.EnableCaching;
 @SpringBootApplication
 @ConfigurationPropertiesScan
 public class ProfitForecastApplication {
-
     public static void main(String[] args) {
         SpringApplication.run(ProfitForecastApplication.class, args);
     }

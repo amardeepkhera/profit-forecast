@@ -5,9 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.time.Month;
 import java.time.Year;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
+import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 public record MonthOfAYear(Month month, Year year) {
@@ -22,10 +21,24 @@ public record MonthOfAYear(Month month, Year year) {
         }
     }
 
-    public Set<Integer> getNPreviousMonths(int n) {
-        return IntStream.range(month().getValue() - n, month.getValue())
-                .boxed()
-                .filter(month -> month > 0 && month <= 12)
-                .collect(Collectors.toSet());
+    public List<String> getNPreviousMonths(int n) {
+        var result = new ArrayList<String>();
+        getNPreviousMonths(result, n, month().getValue(), year().getValue());
+        log.info("Getting forecast for months " + String.join(",", result));
+        return result;
+    }
+
+    private void getNPreviousMonths(List<String> result, int totalMonths, int month, int year) {
+        if (totalMonths == result.size()) {
+            return;
+        }
+        for (int i = month - 1; i >= 1; i--) {
+            if (result.size() == totalMonths) {
+                return;
+            }
+            result.add(i + "_" + year);
+        }
+        getNPreviousMonths(result, totalMonths, 13, year - 1);
+
     }
 }

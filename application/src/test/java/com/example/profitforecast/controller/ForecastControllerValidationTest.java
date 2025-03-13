@@ -1,11 +1,17 @@
 package com.example.profitforecast.controller;
 
 import com.example.profitforecast.domain.model.ErrorResponse;
+import org.assertj.core.description.Description;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.http.HttpStatus;
+import org.springframework.test.web.reactive.server.WebTestClient;
 
 import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThatRuntimeException;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class ForecastControllerValidationTest extends AbstractControllerTest {
 
@@ -27,5 +33,11 @@ public class ForecastControllerValidationTest extends AbstractControllerTest {
                 .expectStatus().isBadRequest()
                 .expectBody()
                 .json(expectedResponse);
+    }
+
+    @Test()
+    void shouldFailWhenValidatingOpenApiSpec(WebTestClient webTestClientWithOpenApiSpec) {
+        assertThatThrownBy(() -> callGetProfitForecastEndpoint("2", "2000", webTestClientWithOpenApiSpec))
+                .hasMessage("No API path found that matches request '/forecast/brands'.");
     }
 }

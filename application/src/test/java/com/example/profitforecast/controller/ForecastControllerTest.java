@@ -20,7 +20,6 @@ public class ForecastControllerTest extends AbstractControllerTest {
         var expectedResponse = objectToJson(List.of(
                 new ProfitForecastPerBrand(appleIphone15.entity().getBrand(), calculateForecastQty(testData).intValue(), calculateForecastProfit(testData).intValue()))
         );
-
         callGetProfitForecastEndpoint("2", "2000")
                 .expectStatus().isOk()
                 .expectBody()
@@ -177,6 +176,23 @@ public class ForecastControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    void shouldReturnProfitForecastFor1ProductOf1BrandFor3MonthAndShouldIncludePreviousYearData() {
+        var appleIphone15 = testRepository.getAppleIphone15();
+        var sale1 = createSale(appleIphone15.entity(), Month.JANUARY, Year.of(2000), 1L, appleIphone15.costPrice());
+        var sale2 = createSale(appleIphone15.entity(), Month.DECEMBER, Year.of(1999), 2L, appleIphone15.costPrice().multiply(new BigDecimal(5)));
+        var sale3 = createSale(appleIphone15.entity(), Month.NOVEMBER, Year.of(1999), 3L, appleIphone15.costPrice().multiply(new BigDecimal(6)));
+        var testData = Map.of(appleIphone15, List.of(sale1, sale2, sale3));
+
+        var expectedResponse = objectToJson(List.of(
+                new ProfitForecastPerBrand(appleIphone15.entity().getBrand(), calculateForecastQty(testData).intValue(), calculateForecastProfit(testData).intValue()))
+        );
+        callGetProfitForecastEndpoint("2", "2000")
+                .expectStatus().isOk()
+                .expectBody()
+                .json(expectedResponse);
+    }
+
+    @Test
     void shouldCalculateForecastForAvailableMonths() {
         var appleIphone15 = testRepository.getAppleIphone15();
         var janSale = createSale(appleIphone15.entity(), Month.JANUARY, Year.of(2000), 1L, appleIphone15.costPrice());
@@ -209,7 +225,6 @@ public class ForecastControllerTest extends AbstractControllerTest {
         var expectedResponse = objectToJson(List.of(
                 new ProfitForecastPerBrand(googlePixel7.entity().getBrand(), calculateForecastQty(googleTestData).intValue(), calculateForecastProfit(googleTestData).intValue()))
         );
-
 
         callGetProfitForecastEndpoint("9", "2000")
                 .expectStatus().isOk()

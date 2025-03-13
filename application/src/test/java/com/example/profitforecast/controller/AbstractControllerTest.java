@@ -7,10 +7,7 @@ import com.example.profitforecast.integration.db.sales.entity.Sales;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 import java.math.BigDecimal;
@@ -22,11 +19,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@ActiveProfiles("test")
+@ControllerTest
 public abstract class AbstractControllerTest {
-
     @Autowired
     protected WebTestClient webTestClient;
     @Autowired
@@ -47,7 +41,12 @@ public abstract class AbstractControllerTest {
     }
 
     protected WebTestClient.ResponseSpec callGetProfitForecastEndpoint(String month, String year) {
-        return webTestClient.get()
+        return callGetProfitForecastEndpoint(month, year, webTestClient);
+    }
+
+    protected WebTestClient.ResponseSpec callGetProfitForecastEndpoint(String month, String year, WebTestClient webTestClient) {
+        return webTestClient
+                .get()
                 .uri(uriBuilder -> uriBuilder.path("/forecast/brands")
                         .queryParam("month", month)
                         .queryParam("year", year)

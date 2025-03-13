@@ -1,4 +1,5 @@
 app:
+  maxAllowedContextRefreshCount: 2
   database:
    host: localhost
   integration:
